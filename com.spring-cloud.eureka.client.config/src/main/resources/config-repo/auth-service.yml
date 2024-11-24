@@ -1,0 +1,19 @@
+server:
+  port: 19095
+
+service:
+  jwt:
+    access-expiration: 3600000
+    secret-key: "TGV0cyBzdGFydCBNU0EgcHJvamVjdA=="
+
+management:
+  zipkin:
+    tracing:
+      endpoint: "http://localhost:9411/api/v2/spans"  # Zipkin 설정
+  tracing:
+    sampling:
+      probability: 1.0  # Zipkin 설정
+  endpoints:
+    web:
+      exposure:
+        include: refresh  # [Post] /actuator/refresh 엔드포인트 노출 (config server 변경사항 수동 갱신)

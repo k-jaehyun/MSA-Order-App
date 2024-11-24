@@ -1,25 +1,19 @@
-
 server:
-  port: 19091
+  port: 0  # 임시 포트, 이후 Config 서버 설정으로 덮어씌움
 
 spring:
-  cloud:
-    config:
-      enabled: false
   application:
     name: order-service
+  config:
+    import: "configserver:"
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: config-server
 
 # Eureka server 연결 (호스트 이름: localhost, 포트: 19090)
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:19090/eureka/
-
-# Zipkin 설정
-management:
-  zipkin:
-    tracing:
-      endpoint: "http://localhost:9411/api/v2/spans"
-  tracing:
-    sampling:
-      probability: 1.0

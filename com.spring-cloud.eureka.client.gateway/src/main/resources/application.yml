@@ -1,41 +1,19 @@
 server:
-  port: 19080  # 게이트웨이 서비스가 실행될 포트 번호
+  port: 0  # 임시 포트, 이후 Config 서버 설정으로 덮어씌움
 
 spring:
-  main:
-    web-application-type: reactive  # Spring 애플리케이션이 리액티브 웹 애플리케이션으로 설정됨
   application:
-    name: gateway-service  # 애플리케이션 이름을 'gateway-service'로 설정
+    name: gateway-service
+  config:
+    import: "configserver:"
   cloud:
-    gateway:
-      routes:  # Spring Cloud Gateway의 라우팅 설정
-        - id: order-service  # 라우트 식별자
-          uri: lb://order-service  # 'order-service'라는 이름으로 로드 밸런싱된 서비스로 라우팅
-          predicates:
-            - Path=/order/**  # /order/** 경로로 들어오는 요청을 이 라우트로 처리
-        - id: product-service
-          uri: lb://product-service
-          predicates:
-            - Path=/product/**
-        - id: auth-service
-          uri: lb://auth-service
-          predicates:
-            - Path=/auth/**
+    config:
       discovery:
-        locator:
-          enabled: true  # 서비스 디스커버리를 통해 동적으로 라우트를 생성하도록 설정
+        enabled: true
+        service-id: config-server
 
 # Eureka 서버
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:19090/eureka/
-
-# Zipkin
-management:
-  zipkin:
-    tracing:
-      endpoint: "http://localhost:9411/api/v2/spans"
-  tracing:
-    sampling:
-      probability: 1.0
