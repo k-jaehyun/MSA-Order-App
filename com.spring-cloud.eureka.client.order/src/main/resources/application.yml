@@ -1,0 +1,25 @@
+
+server:
+  port: 19091
+
+spring:
+  cloud:
+    config:
+      enabled: false
+  application:
+    name: order-service
+
+# Eureka server 연결 (호스트 이름: localhost, 포트: 19090)
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:19090/eureka/
+
+# Zipkin 설정
+management:
+  zipkin:
+    tracing:
+      endpoint: "http://localhost:9411/api/v2/spans"
+  tracing:
+    sampling:
+      probability: 1.0
