@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -27,6 +28,7 @@ public class User {
   @Enumerated(value = EnumType.STRING)
   private UserRoleEnum role;
 
+  @Builder
   public User(String username, String password) {
     this.username = username;
     this.password = password;
