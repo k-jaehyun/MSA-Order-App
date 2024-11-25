@@ -2,6 +2,10 @@ package com.spring_cloud.eureka.client.product.products;
 
 import com.spring_cloud.eureka.client.product.core.Product;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,5 +43,15 @@ public class ProductService {
   public ProductDto getProduct(Long productId) {
     Product product = productRepository.findById(productId).orElse(null);
     return new ProductDto(product);
+  }
+
+  public Page<ProductDto> getPrducts(int size, String keyword, String sortBy, Direction direction,
+      Integer page) {
+
+    Pageable pageable = PageRequest.of(page, size, direction, sortBy);
+
+    Page<Product> pagedProduct = productRepository.searchProducts(keyword, pageable);
+
+    return pagedProduct.map(ProductDto::new);
   }
 }
