@@ -2,9 +2,12 @@ package com.spring_cloud.eureka.client.order.orders;
 
 import com.spring_cloud.eureka.client.order.client.ProductClient;
 import com.spring_cloud.eureka.client.order.core.Order;
-import com.spring_cloud.eureka.client.order.core.OrderStatus;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +32,7 @@ public class OrderService {
     Order order = new Order(productIdList, username);
     orderRepository.save(order);
 
-    return new OrderResponseDto(productIdList, OrderStatus.CREATED, username);
+    return new OrderResponseDto(order);
   }
 
 
@@ -45,6 +48,21 @@ public class OrderService {
       throw new IllegalArgumentException("자신의 주문만 조회 할 수 있습니다.");
     }
 
-    return new OrderResponseDto(order.getProductIdList(), order.getOrderStatus(), username);
+    return new OrderResponseDto(order);
   }
+
+  public Page<OrderResponseDto> getOrders(int size, Long productId, String sortBy,
+      Direction direction, Integer page,
+      HttpHeaders headers) {
+
+    String username = headers.getFirst("username");
+
+    Pageable pageable = PageRequest.of(page, size, direction, sortBy);
+
+    Page<Order> pagedOrder = orderRepository.searchOrders(productId, pageable, username);
+
+    return pagedOrder.map(OrderResponseDto::new);
+  }
+
+
 }

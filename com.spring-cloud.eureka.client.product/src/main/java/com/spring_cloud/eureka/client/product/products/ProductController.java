@@ -80,10 +80,9 @@ public class ProductController {
 
   @GetMapping("/{productId}/reduceQuantity")
   public ResponseEntity reduceQuantity(
-      @PathVariable Long productId,
-      @RequestHeader HttpHeaders headers) {
+      @PathVariable Long productId) {
 
-    ProductDto productResponseDto = productService.reduceProductQuantity(productId, headers);
+    ProductDto productResponseDto = productService.reduceProductQuantity(productId);
 
     return ResponseEntity.ok(productResponseDto);
   }
