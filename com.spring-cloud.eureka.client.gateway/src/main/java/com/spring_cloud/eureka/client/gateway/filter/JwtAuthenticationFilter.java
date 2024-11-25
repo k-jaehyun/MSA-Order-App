@@ -7,7 +7,7 @@ import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
@@ -22,7 +22,6 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
 
   @Override
   public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-    ServerHttpResponse response = exchange.getResponse();
 
     // 로그인, 회원가입 경로 예외
     String path = exchange.getRequest().getURI().getPath();
@@ -52,10 +51,16 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
 //        }
 //      }
 
-      response.getHeaders().add("username", username);
-      response.getHeaders().add(JwtUtil.ROLE, role);
-      response.getHeaders().add("issuer", info.getIssuer());
-      response.getHeaders().add("issuedAt", info.getIssuedAt().toString());
+      ServerHttpRequest mofiedRequest = exchange.getRequest()
+          .mutate()
+          .header("username", username)
+          .header(JwtUtil.ROLE, role)
+          .header("issuer", info.getIssuer())
+          .header("issuedAt", info.getIssuedAt().toString())
+          .build();
+
+      exchange = exchange.mutate().request(mofiedRequest).build();
+
     } else {
       throw new RuntimeException("token has no text");
     }
