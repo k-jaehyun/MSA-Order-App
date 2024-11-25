@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono;
 
 @Component
 @RequiredArgsConstructor
-public class JwtAuthorizationFilter implements GlobalFilter, Ordered {
+public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
 
   //  private final AuthService authService; // 순환 참조 오류
   private final JwtUtil jwtUtil;
