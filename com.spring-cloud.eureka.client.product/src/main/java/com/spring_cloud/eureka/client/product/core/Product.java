@@ -28,10 +28,16 @@ public class Product {
   @Setter
   private Long quantity;
 
+  private Boolean isDeleted;
+
   @Builder
   public Product(String name, Long quantity) {
     this.name = name;
     this.quantity = quantity;
+    this.isDeleted = false;
   }
 
+  public void delete() {
+    this.isDeleted = true;
+  }
 }

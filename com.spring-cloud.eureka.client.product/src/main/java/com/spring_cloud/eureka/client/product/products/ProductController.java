@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -65,6 +66,16 @@ public class ProductController {
         headers);
 
     return ResponseEntity.ok(productResponseDto);
+  }
+
+  @DeleteMapping("/{productId}")
+  public ResponseEntity deleteProduct(
+      @PathVariable Long productId,
+      @RequestHeader HttpHeaders headers) {
+
+    productService.deleteProduct(productId, headers);
+
+    return ResponseEntity.ok("상품 삭제 성공");
   }
 
 }

@@ -68,4 +68,18 @@ public class ProductService {
 
     return new ProductDto(product);
   }
+
+  @Transactional
+  public void deleteProduct(Long productId, HttpHeaders headers) {
+
+    if (!headers.getFirst("Role").equals("ADMIN")) {
+      throw new IllegalArgumentException("ADMIN만 접근 가능합니다.");
+    }
+
+    Product product = productRepository.findById(productId)
+        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 productId 입니다."));
+
+    product.delete();
+
+  }
 }
