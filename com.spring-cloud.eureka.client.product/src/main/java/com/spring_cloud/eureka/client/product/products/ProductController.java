@@ -78,4 +78,14 @@ public class ProductController {
     return ResponseEntity.ok("상품 삭제 성공");
   }
 
+  @GetMapping("/{productId}/reduceQuantity")
+  public ResponseEntity reduceQuantity(
+      @PathVariable Long productId,
+      @RequestHeader HttpHeaders headers) {
+
+    ProductDto productResponseDto = productService.reduceProductQuantity(productId, headers);
+
+    return ResponseEntity.ok(productResponseDto);
+  }
+
 }
