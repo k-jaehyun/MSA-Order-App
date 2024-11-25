@@ -36,6 +36,7 @@ public class AuthConfig {
             .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
             .permitAll()
             .requestMatchers("/auth/signUp").permitAll()
+            .requestMatchers("/auth/signIn").permitAll()
             .anyRequest().authenticated()
     );
 
