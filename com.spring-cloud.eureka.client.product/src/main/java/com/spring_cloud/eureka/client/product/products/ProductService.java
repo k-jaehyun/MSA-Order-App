@@ -17,7 +17,6 @@ public class ProductService {
   private final ProductRepository productRepository;
 
 
-  @Transactional
   public ProductDto createProduct(ProductDto productRequestDto, HttpHeaders headers) {
     String username = headers.getFirst("username");
     String role = headers.getFirst("Role");
@@ -27,15 +26,13 @@ public class ProductService {
     if (!role.equals("ADMIN")) {
       throw new IllegalArgumentException("ADMIN만 접근 가능합니다.");
     }
-    Product product = productRepository.findProductByName(productRequestDto.getName()).orElse(null);
 
-    if (product == null) {
-      Product newProduct = ProductDto.toEntity(productRequestDto);
-      productRepository.save(newProduct);
-      return new ProductDto(newProduct);
+    if (productRepository.findProductByName(productRequestDto.getName()).isPresent()) {
+      throw new IllegalArgumentException("이미 존재하는 product 입니다.");
     }
 
-    product.setQuantity(product.getQuantity() + productRequestDto.getQuantity());
+    Product product = ProductDto.toEntity(productRequestDto);
+    productRepository.save(product);
 
     return new ProductDto(product);
   }
@@ -53,5 +50,22 @@ public class ProductService {
     Page<Product> pagedProduct = productRepository.searchProducts(keyword, pageable);
 
     return pagedProduct.map(ProductDto::new);
+  }
+
+  @Transactional
+  public ProductDto updateProduct(Long productId, ProductDto productRequestDto,
+      HttpHeaders headers) {
+
+    if (!headers.getFirst("Role").equals("ADMIN")) {
+      throw new IllegalArgumentException("ADMIN만 접근 가능합니다.");
+    }
+
+    Product product = productRepository.findById(productId)
+        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 productId 입니다."));
+
+    product.setName(productRequestDto.getName());
+    product.setQuantity(productRequestDto.getQuantity());
+
+    return new ProductDto(product);
   }
 }
