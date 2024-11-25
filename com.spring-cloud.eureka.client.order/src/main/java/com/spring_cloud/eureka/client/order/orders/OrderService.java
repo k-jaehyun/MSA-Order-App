@@ -33,5 +33,18 @@ public class OrderService {
   }
 
 
+  public OrderResponseDto getOrder(Long orderId, HttpHeaders headers) {
 
+    String username = headers.getFirst("username");
+    String role = headers.getFirst("Role");
+
+    Order order = orderRepository.findById(orderId)
+        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 orderId 입니다."));
+
+    if (!role.equals("ADMIN") && !order.getUsername().equals(username)) {
+      throw new IllegalArgumentException("자신의 주문만 조회 할 수 있습니다.");
+    }
+
+    return new OrderResponseDto(order.getProductIdList(), order.getOrderStatus(), username);
+  }
 }

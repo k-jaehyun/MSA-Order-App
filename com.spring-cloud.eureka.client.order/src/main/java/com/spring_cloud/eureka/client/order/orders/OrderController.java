@@ -3,6 +3,8 @@ package com.spring_cloud.eureka.client.order.orders;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -26,6 +28,17 @@ public class OrderController {
 
     return ResponseEntity.ok(orderResponseDto);
 
+  }
+
+  @GetMapping("/{orderId}")
+  public ResponseEntity getOrder(
+      @PathVariable Long orderId,
+      @RequestHeader HttpHeaders headers
+  ) {
+
+    OrderResponseDto orderResponseDto = orderService.getOrder(orderId, headers);
+
+    return ResponseEntity.ok(orderResponseDto);
   }
 
 }
